@@ -6,7 +6,10 @@ from api.views import *
 app_name = 'api'
 
 router_v1 = DefaultRouter()
-# router_v1.register('trades', TradesViewSet, basename='trades') # Можно менять это на будущее
+router_v1.register('categories', CategoriesViewSet, basename='categories')
+router_v1.register('forecast', ForecastViewSet, basename='forecast')
+router_v1.register('sales', SalesViewSet, basename='sales')
+router_v1.register('shops', ShopsViewSet, basename='shops')
 
 
 urlpatterns = [
