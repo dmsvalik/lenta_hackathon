@@ -3,7 +3,13 @@
 from rest_framework.viewsets import ModelViewSet
 from categories.models import Categories
 from forecast.models import Forecast, ForecastDay
-from api.serializer import CategoriesSerializer, ForecastDaySerializer, ForecastSerializer, SalesSerializer, ShopsSerializer
+from api.serializers import (
+    CategoriesSerializer,
+    ForecastDaySerializer,
+    ForecastSerializer,
+    SalesSerializer,
+    ShopsSerializer
+)
 from shops.models import Shops
 from sales.models import Sales
 

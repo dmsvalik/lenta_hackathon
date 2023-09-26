@@ -2,6 +2,7 @@ from django.db import models
 from shops.models import Shops
 from categories.models import Categories
 
+
 class Sales(models.Model):
     """ Модель Продажа. """
     store = models.ForeignKey(
@@ -41,7 +42,7 @@ class Sales(models.Model):
         verbose_name='sales_run_promo',
         help_text='продажи с признаком промо в РУБ'
     )
-    
+
     class Meta:
         ordering = ('store', 'sku', 'date')
         verbose_name = 'Продажа'
