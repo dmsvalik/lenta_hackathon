@@ -9,7 +9,7 @@ class ForecastDay(models.Model):
     )
     units = models.IntegerField(
         verbose_name='units',
-        help_text='Единица'
+        help_text='Колличество позиций'
     )
 
 class Forecast(models.Model):

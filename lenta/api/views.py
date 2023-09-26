@@ -9,7 +9,7 @@ from sales.models import Sales
 
 
 class CategoriesViewSet(ModelViewSet):
-    """ Список ингридиентов. """
+    """ Список товаров. """
     queryset = Categories.objects.all()
 
     def get_serializer_class(self):
@@ -17,7 +17,7 @@ class CategoriesViewSet(ModelViewSet):
 
 
 class ForecastViewSet(ModelViewSet):
-    """ Список ингридиентов. """
+    """ Список предсказаний. """
     queryset = Forecast.objects.all()
 
     def get_serializer_class(self):
@@ -25,7 +25,7 @@ class ForecastViewSet(ModelViewSet):
 
 
 class ForecastDayViewSet(ModelViewSet):
-    """ Список ингридиентов. """
+    """ Список даты предсказания. """
     queryset = ForecastDay.objects.all()
 
     def get_serializer_class(self):
@@ -33,7 +33,7 @@ class ForecastDayViewSet(ModelViewSet):
 
 
 class SalesViewSet(ModelViewSet):
-    """ Список ингридиентов. """
+    """ Список покупок. """
     queryset = Sales.objects.all()
 
     def get_serializer_class(self):
@@ -41,7 +41,7 @@ class SalesViewSet(ModelViewSet):
 
 
 class ShopsViewSet(ModelViewSet):
-    """ Список ингридиентов. """
+    """ Список магазинов. """
     queryset = Shops.objects.all()
 
     def get_serializer_class(self):
