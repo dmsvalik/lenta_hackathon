@@ -27,19 +27,19 @@ class Sales(models.Model):
     )
     sales_units = models.IntegerField(
         verbose_name='sales_units',
-        help_text='подразделение продажи'
+        help_text='число проданных товаров без признака промо'
     )
     sales_units_promo = models.IntegerField(
         verbose_name='sales_units',
-        help_text='подразделение продажи'
+        help_text='число проданных товаров с признаком промо'
     )
     sales_rub = models.FloatField(
         verbose_name='sales_rub',
-        help_text='стоимость продажи'
+        help_text='продажи без признака промо в РУБ'
     )
     sales_run_promo = models.FloatField(
         verbose_name='sales_run_promo',
-        help_text='промо продажи'
+        help_text='продажи с признаком промо в РУБ'
     )
     
     class Meta:
