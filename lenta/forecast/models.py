@@ -3,6 +3,7 @@ from shops.models import Shops
 from categories.models import Categories
 
 class ForecastDay(models.Model):
+    """ Модель прогноза продаж будущих дней"""
     future_date = models.DateField(
         help_text='Дата будущих продаж'
     )
