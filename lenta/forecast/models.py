@@ -3,12 +3,13 @@ from shops.models import Shops
 from categories.models import Categories
 
 class ForecastDay(models.Model):
+    """ Модель прогноза продаж будущих дней"""
     future_date = models.DateField(
         help_text='Дата будущих продаж'
     )
     units = models.IntegerField(
         verbose_name='units',
-        help_text='Единица'
+        help_text='Колличество позиций'
     )
 
 class Forecast(models.Model):

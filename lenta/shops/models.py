@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Shops(models.Model):
+    """ Модель магазина """
     store = models.CharField(
         max_length=255,
         # verbose_name='store',
