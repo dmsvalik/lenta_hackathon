@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Categories(models.Model):
     '''Модель товара'''
     sku = models.CharField(
