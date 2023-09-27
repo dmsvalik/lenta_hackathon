@@ -18,7 +18,7 @@ class Shops(models.Model):
         verbose_name='division',
         help_text='Дивизион'
     )
-    type_format= models.IntegerField(
+    type_format = models.IntegerField(
         verbose_name='type_format',
         help_text='Формат магазина'
     )

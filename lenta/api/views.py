@@ -3,17 +3,37 @@
 from rest_framework.viewsets import ModelViewSet
 from categories.models import Categories
 from forecast.models import Forecast, ForecastDay
-from api.serializer import CategoriesSerializer, ForecastDaySerializer, ForecastSerializer, SalesSerializer, ShopsSerializer
+from api.serializers import (
+    CategoriesSerializer,
+    ForecastDaySerializer,
+    ForecastSerializer,
+    SalesSerializer,
+    ShopsSerializer
+)
 from shops.models import Shops
 from sales.models import Sales
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 
 
-class CategoriesViewSet(ModelViewSet):
+class CategoriesAndShopAPIView(ListAPIView):
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        data = {'data': serializer.data}
+        return Response(data)
+
+
+class CategoriesAPIView(CategoriesAndShopAPIView):
     """ Список товаров. """
     queryset = Categories.objects.all()
+    serializer_class = CategoriesSerializer
 
-    def get_serializer_class(self):
-        return CategoriesSerializer
+
+class ShopsViewSet(CategoriesAndShopAPIView):
+    """ Список магазинов. """
+    queryset = Shops.objects.all()
+    serializer_class = ShopsSerializer
 
 
 class ForecastViewSet(ModelViewSet):
@@ -32,17 +52,7 @@ class ForecastDayViewSet(ModelViewSet):
         return ForecastDaySerializer
 
 
-class SalesViewSet(ModelViewSet):
+class SalesViewSet(CategoriesAndShopAPIView):
     """ Список покупок. """
     queryset = Sales.objects.all()
-
-    def get_serializer_class(self):
-        return SalesSerializer
-
-
-class ShopsViewSet(ModelViewSet):
-    """ Список магазинов. """
-    queryset = Shops.objects.all()
-
-    def get_serializer_class(self):
-        return ShopsSerializer
+    serializer_class = SalesSerializer

@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from categories.models import Categories
 from forecast.models import Forecast, ForecastDay
 from sales.models import Sales
@@ -29,6 +28,9 @@ class ForecastDaySerializer(serializers.ModelSerializer):
 
 class SalesSerializer(serializers.ModelSerializer):
     """ Сериализатор для продажи. """
+    store = serializers.CharField(source='shop.store')
+    sku = serializers.CharField(source='sku.sku')
+
     class Meta:
         model = Sales
         fields = '__all__'
