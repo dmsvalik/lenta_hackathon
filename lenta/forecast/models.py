@@ -12,6 +12,7 @@ class SalesUnits(models.Model):
         help_text='Колличество позиций'
     )
 
+
 class Forecast(models.Model):
     """ Модель прогноза продаж. """
     store = models.ManyToManyField(
@@ -38,11 +39,6 @@ class Forecast(models.Model):
         verbose_name='прогноз',
         help_text='Прогноз'
     )
-        
-    # class Meta:
-    #     ordering = ('store', 'sku', 'forecast')
-    #     verbose_name = 'Прогноз'
-    #     verbose_name_plural = 'Прогноз'
 
     def __str__(self):
         return f"{self.store} - {self.forecast_date.strftime('%Y, %B %d')}"
