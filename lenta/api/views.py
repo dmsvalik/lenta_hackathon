@@ -5,8 +5,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from categories.models import Categories
-from forecast.models import Forecast, SalesUnits
-from api.serializer import CategoriesSerializer, ForecastDataSerializer, ForecastSerializer, SalesSerializer, SalesUnitsSerializer, ShopsSerializer
+from forecast.models import Forecast, ForecastDay
+from api.serializers import (
+    CategoriesSerializer,
+    ForecastDaySerializer,
+    ForecastSerializer,
+    SalesSerializer,
+    ShopsSerializer
+)
 from shops.models import Shops
 from sales.models import Sales
 
