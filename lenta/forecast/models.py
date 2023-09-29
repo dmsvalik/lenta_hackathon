@@ -2,8 +2,7 @@ from django.db import models
 from shops.models import Shops
 from categories.models import Categories
 
-
-class ForecastDay(models.Model):
+class SalesUnits(models.Model):
     """ Модель прогноза продаж будущих дней"""
     future_date = models.DateField(
         help_text='Дата будущих продаж'
@@ -16,16 +15,16 @@ class ForecastDay(models.Model):
 
 class Forecast(models.Model):
     """ Модель прогноза продаж. """
-    store = models.ForeignKey(
+    store = models.ManyToManyField(
         Shops,
-        on_delete=models.CASCADE,
+        # on_delete=models.CASCADE,
         # related_name='store',
         verbose_name='торговый центр',
         help_text='Выберите торговый центр'
     )
-    sku = models.ForeignKey(
+    sku = models.ManyToManyField(
         Categories,
-        on_delete=models.CASCADE,
+        # on_delete=models.CASCADE,
         # related_name='sku',
         verbose_name='товар',
         help_text='Выберите товар'
@@ -33,18 +32,13 @@ class Forecast(models.Model):
     forecast_date = models.DateField(
         help_text='Дата отсечки'
     )
-    forecast = models.ForeignKey(
-        ForecastDay,
-        on_delete=models.CASCADE,
+    forecast = models.ManyToManyField(
+        SalesUnits,
+        # on_delete=models.CASCADE,
         related_name='forecast',
         verbose_name='прогноз',
         help_text='Прогноз'
     )
 
-    class Meta:
-        ordering = ('store', 'sku', 'forecast')
-        verbose_name = 'Прогноз'
-        verbose_name_plural = 'Прогноз'
-
     def __str__(self):
-        return self.store
+        return f"{self.store} - {self.forecast_date.strftime('%Y, %B %d')}"

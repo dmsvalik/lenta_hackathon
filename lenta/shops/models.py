@@ -34,3 +34,6 @@ class Shops(models.Model):
         verbose_name='is_active',
         help_text='флаг активного магазина на данный момент'
     )
+
+    def __str__(self):
+        return self.store
