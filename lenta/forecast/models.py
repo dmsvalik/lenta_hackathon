@@ -2,6 +2,7 @@ from django.db import models
 from shops.models import Shops
 from categories.models import Categories
 
+
 class SalesUnits(models.Model):
     """ Модель прогноза продаж будущих дней"""
     future_date = models.DateField(
@@ -11,6 +12,7 @@ class SalesUnits(models.Model):
         verbose_name='units',
         help_text='Колличество позиций'
     )
+
 
 class Forecast(models.Model):
     """ Модель прогноза продаж. """
@@ -38,7 +40,7 @@ class Forecast(models.Model):
         verbose_name='прогноз',
         help_text='Прогноз'
     )
-        
+
     # class Meta:
     #     ordering = ('store', 'sku', 'forecast')
     #     verbose_name = 'Прогноз'

@@ -19,6 +19,7 @@ class SalesUnitsSerializer(serializers.ModelSerializer):
         model = SalesUnits
         fields = '__all__'
 
+
 class ForecastSerializer(serializers.ModelSerializer):
     forecast = serializers.SerializerMethodField()
 
