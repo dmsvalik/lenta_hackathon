@@ -12,25 +12,47 @@ class CategoriesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ForecastSerializer(serializers.ModelSerializer):
-    """ Сериализатор для предсказания. """
-    class Meta:
-        model = Forecast
-        fields = '__all__'
-
-
-class ForecastDaySerializer(serializers.ModelSerializer):
+class SalesUnitsSerializer(serializers.ModelSerializer):
     """ Сериализатор для даты отсчета. """
     class Meta:
-        model = ForecastDay
+        model = SalesUnits
         fields = '__all__'
+
+class ForecastSerializer(serializers.ModelSerializer):
+    forecast = serializers.SerializerMethodField()
+
+    def get_forecast(self, obj):
+        if obj.forecast.count() > 1:
+            sales_units = obj.forecast.all()
+            forecast_data = {}
+            for unit in sales_units:
+                forecast_data[unit.future_date.strftime('%Y-%m-%d')] = unit.units
+            return forecast_data
+        return None
+# class ForecastSerializer(serializers.ModelSerializer):
+#     """ Сериализатор для предсказания. """
+#     forecast = serializers.SerializerMethodField()
+
+#     def get_forecast(self, obj):
+#         sales_units = SalesUnits.objects.filter(id__in=obj.forecast.values_list('id', flat=True))
+#         forecast_data = {}
+#         for unit in sales_units:
+#             forecast_data[unit.future_date.strftime('%Y-%m-%d')] = unit.units
+#         return forecast_data
+
+    class Meta:
+        model = Forecast
+        fields = ('store', 'sku', 'forecast_date', 'forecast')
+
+class ForecastDataSerializer(serializers.Serializer):
+    store = serializers.CharField()
+    sku = serializers.CharField()
+    forecast_date = serializers.DateField()
+    forecast = serializers.DictField()
 
 
 class SalesSerializer(serializers.ModelSerializer):
     """ Сериализатор для продажи. """
-    store = serializers.CharField(source='shop.store')
-    sku = serializers.CharField(source='sku.sku')
-
     class Meta:
         model = Sales
         fields = '__all__'
