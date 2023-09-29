@@ -30,7 +30,7 @@ class Sales(models.Model):
         help_text='число проданных товаров без признака промо'
     )
     sales_units_promo = models.IntegerField(
-        verbose_name='sales_units',
+        verbose_name='sales_units_promo',
         help_text='число проданных товаров с признаком промо'
     )
     sales_rub = models.FloatField(
@@ -47,5 +47,5 @@ class Sales(models.Model):
         verbose_name = 'Продажа'
         verbose_name_plural = 'Продажа'
 
-    def __str__(self):
-        return self.store
+    # def __str__(self):
+    #     return self.store
