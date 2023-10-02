@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'categories.apps.CategoriesConfig',
     'forecast.apps.ForecastConfig',
     'sales.apps.SalesConfig',
-    'shops.apps.ShopsConfig',    
+    'shops.apps.ShopsConfig',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -87,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

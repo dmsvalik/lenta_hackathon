@@ -11,10 +11,12 @@ from api.serializers import (
     SalesUnitsSerializer,
     ForecastSerializer,
     SalesSerializer,
-    ShopsSerializer
+    ShopsSerializer,
+    CustomUserSerializer
 )
 from shops.models import Shops
 from sales.models import Sales
+from users.models import CustomUser
 
 
 class BaseAPIVIew(ListAPIView):
@@ -72,6 +74,7 @@ class ForecastDataView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class SalesAPIView(BaseAPIVIew):
     """ Список покупок. """
     queryset = Sales.objects.all()
@@ -86,3 +89,8 @@ class ShopsAPIView(BaseAPIVIew):
 
     def get_serializer_class(self):
         return ShopsSerializer
+
+
+class UsersViewSet(ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer

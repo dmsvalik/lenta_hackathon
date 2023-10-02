@@ -6,11 +6,13 @@ from api.views import (
     ForecastDataView,
     SalesAPIView,
     ShopsAPIView,
+    UsersViewSet
 )
 
 app_name = 'api'
 
 router_v1 = DefaultRouter()
+router_v1.register('users', UsersViewSet, basename='users')
 # router_v1.register('forecast', ForecastViewSet, basename='forecast')
 
 
