@@ -15,12 +15,13 @@ cd lenta
 python3 -m venv venv # установить виртуальный режим
 
 # Linux/macOS:
-  source env/bin/activate
+  source venv/bin/activate
 # windows:
-  source env/scripts/activate
+  source venv/scripts/activate
 
 pip install -r requirements.txt
-!!!!! python manage.py migrate # необходимо при наличии моделей и БД (отредактировать)
+python manage.py makemigrations
+python manage.py migrate
 python manage.py runserver
 ```
 При успешном старте получим backend приложение на [127.0.0.1:8000](https://127.0.0.1:8000)
