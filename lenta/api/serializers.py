@@ -62,3 +62,8 @@ class ShopsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shops
         fields = '__all__'
+
+
+class AuthTokenSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(style={'input_type': 'password'})

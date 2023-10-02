@@ -8,6 +8,7 @@ from api.views import (
     ShopsAPIView,
     UsersViewSet
 )
+from users.views import CustomAuthToken
 
 app_name = 'api'
 
@@ -21,7 +22,8 @@ urlpatterns = [
     path('forecast/', ForecastDataView.as_view(), name='forecast-data'),
     path('shops/', ShopsAPIView.as_view()),
     path('sales/', SalesAPIView.as_view()),
-    path('categories/', CategoriesAPIView.as_view())
+    path('categories/', CategoriesAPIView.as_view()),
+    path('auth/', CustomAuthToken.as_view(), name='auth')
     # path('forecast', views.create_forecast),
     # path('forecast', views.get_forecast),
 ]
