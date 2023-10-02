@@ -15,7 +15,7 @@ class Categories(models.Model):
     )
     category = models.CharField(
         max_length=255,
-        # verbose_name='category',
+        verbose_name='category',
         help_text='Категория товара'
     )
     subcategory = models.CharField(

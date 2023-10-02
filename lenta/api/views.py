@@ -1,14 +1,14 @@
 # from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from categories.models import Categories
-from forecast.models import Forecast, ForecastDay
+from forecast.models import Forecast, SalesUnits
 from api.serializers import (
     CategoriesSerializer,
-    ForecastDaySerializer,
+    SalesUnitsSerializer,
     ForecastSerializer,
     SalesSerializer,
     ShopsSerializer
@@ -17,7 +17,15 @@ from shops.models import Shops
 from sales.models import Sales
 
 
-class CategoriesViewSet(ModelViewSet):
+class BaseAPIVIew(ListAPIView):
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        data = {'data': serializer.data}
+        return Response(data)
+
+
+class CategoriesAPIView(BaseAPIVIew):
     """ Список товаров. """
     queryset = Categories.objects.all()
 
@@ -25,7 +33,7 @@ class CategoriesViewSet(ModelViewSet):
         return CategoriesSerializer
 
 
-class ForecastViewSet(ModelViewSet):
+class ForecastAPIView(BaseAPIVIew):
     """ Список предсказаний. """
     queryset = Forecast.objects.all()
 
@@ -33,17 +41,15 @@ class ForecastViewSet(ModelViewSet):
         return ForecastSerializer
 
 
-class SalesUnitsViewSet(ModelViewSet):
-    """ Список предсказаний. """
-    queryset = SalesUnits.objects.all()
-
-    def get_serializer_class(self):
-        return SalesUnitsSerializer
-
-
 class ForecastDataView(APIView):
+    def get(self, request):
+        queryset = Forecast.objects.all()
+        serializer = ForecastSerializer(queryset, many=True)
+        data = {'data': serializer.data}
+        return Response(data)
+
     def post(self, request, format=None):
-        serializer = ForecastDataSerializer(data=request.data)
+        serializer = SalesUnitsSerializer(data=request.data)
 
         if serializer.is_valid():
             data = serializer.validated_data
@@ -66,35 +72,7 @@ class ForecastDataView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @api_view(['POST'])
-# def create_forecast(request):
-#     if request.method == 'POST':
-#         store = request.data.get('store')
-#         forecast_date = request.data.get('forecast_date')
-#         sku = request.data.get('sku')
-#         sales_units_data = request.data.get('sales_units')
-
-#         # Создайте объекты модели и сохраните их
-#         forecast = Forecast.objects.create(store=store, forecast_date=forecast_date, sku=sku)
-#         for date, units in sales_units_data.items():
-#             SalesUnits.objects.create(date=date, units=units, forecast=forecast)
-
-#         return Response("Forecast created successfully", status=status.HTTP_201_CREATED)
-
-# @api_view(['GET'])
-# def get_forecast(request):
-#     if request.method == 'GET':
-#         store = request.query_params.get('store')
-#         sku = request.query_params.get('sku')
-#         forecast_date = request.query_params.get('forecast_date')
-
-#         # Выполните фильтрацию по параметрам и получите соответствующие объекты
-#         forecasts = Forecast.objects.filter(store=store, sku=sku, forecast_date=forecast_date)
-#         serializer = ForecastSerializer(forecasts, many=True)
-#         return Response({"data": serializer.data})
-
-
-class SalesViewSet(ModelViewSet):
+class SalesAPIView(BaseAPIVIew):
     """ Список покупок. """
     queryset = Sales.objects.all()
 
@@ -102,7 +80,7 @@ class SalesViewSet(ModelViewSet):
         return SalesSerializer
 
 
-class ShopsViewSet(ModelViewSet):
+class ShopsAPIView(BaseAPIVIew):
     """ Список магазинов. """
     queryset = Shops.objects.all()
 
