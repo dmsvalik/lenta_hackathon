@@ -2,8 +2,9 @@ from django.db import models
 from shops.models import Shops
 from categories.models import Categories
 
+
 class SalesUnits(models.Model):
-    """ Модель прогноза продаж будущих дней"""
+    """ Модель будущих дней продаж и колличества"""
     future_date = models.DateField(
         help_text='Дата будущих продаж'
     )
@@ -13,27 +14,38 @@ class SalesUnits(models.Model):
     )
 
 
-class Forecast(models.Model):
-    """ Модель прогноза продаж. """
-    store = models.ManyToManyField(
-        Shops,
-        # on_delete=models.CASCADE,
-        # related_name='store',
-        verbose_name='торговый центр',
-        help_text='Выберите торговый центр'
-    )
-    sku = models.ManyToManyField(
+class ForecastSales(models.Model):
+    """ Модель зависимости товара и даты будущих продаж"""
+    sku = models.ForeignKey(
         Categories,
-        # on_delete=models.CASCADE,
+        on_delete=models.CASCADE,
         # related_name='sku',
         verbose_name='товар',
         help_text='Выберите товар'
+    )
+    sales_units = models.ManyToManyField(
+        SalesUnits,
+        # on_delete=models.CASCADE,
+        related_name='sales_units',
+        verbose_name='будущие продажи',
+        help_text='Будущие продажи'
+    )
+
+
+class Forecast(models.Model):
+    """ Модель прогноза продаж. """
+    store = models.ForeignKey(
+        Shops,
+        on_delete=models.CASCADE,
+        # related_name='store',
+        verbose_name='торговый центр',
+        help_text='Выберите торговый центр'
     )
     forecast_date = models.DateField(
         help_text='Дата отсечки'
     )
     forecast = models.ManyToManyField(
-        SalesUnits,
+        ForecastSales,
         # on_delete=models.CASCADE,
         related_name='forecast',
         verbose_name='прогноз',

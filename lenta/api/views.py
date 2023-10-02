@@ -1,16 +1,17 @@
 # from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
+# from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from categories.models import Categories
-from forecast.models import Forecast, ForecastDay
+from forecast.models import Forecast, SalesUnits
 from api.serializers import (
     CategoriesSerializer,
-    ForecastDaySerializer,
+    ForecastDataSerializer,
     ForecastSerializer,
     SalesSerializer,
+    SalesUnitsSerializer,
     ShopsSerializer
 )
 from shops.models import Shops
