@@ -29,70 +29,72 @@ class SalesUnitsSerializer(serializers.ModelSerializer):
 
 class ForecastSalesSerializer(serializers.ModelSerializer):
     """ Сериализатор для даты отсчета. """
+    sales_units = SalesUnitsSerializer(many=True)
     class Meta:
         model = ForecastSales
         fields = '__all__'
 
+
+class SalesUnitsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SalesUnits
+        fields = '__all__'
+
+class ForecastSalesSerializer(serializers.ModelSerializer):
+    sku = serializers.CharField(source='sku.sku')
+    sales_units = SalesUnitsSerializer(many=True)
+
+    class Meta:
+        model = ForecastSales
+        fields = ('sku', 'sales_units')
+
 class ForecastSerializer(serializers.ModelSerializer):
-    forecast = serializers.SerializerMethodField()
-
-    def get_forecast(self, obj):
-        if obj.forecast.count() > 1:
-            sales_units = obj.forecast.all()
-            forecast_data = {}
-            for unit in sales_units:
-                forecast_data[unit.future_date.strftime('%Y-%m-%d')] = unit.units
-            return forecast_data
-        return None
-# class ForecastSerializer(serializers.ModelSerializer):
-#     """ Сериализатор для предсказания. """
-#     forecast = serializers.SerializerMethodField()
-
-#     def get_forecast(self, obj):
-#         sales_units = SalesUnits.objects.filter(id__in=obj.forecast.values_list('id', flat=True))
-#         forecast_data = {}
-#         for unit in sales_units:
-#             forecast_data[unit.future_date.strftime('%Y-%m-%d')] = unit.units
-#         return forecast_data
+    forecast = ForecastSalesSerializer(many=True, read_only=True)
+    store = serializers.CharField(source='store.store')
+    sku = serializers.SerializerMethodField()
 
     class Meta:
         model = Forecast
-        fields = ('store', 'forecast_date', 'forecast')
+        fields = ('store', 'sku', 'forecast_date', 'forecast')
 
-class ForecastDataSerializer(serializers.Serializer):
-    store = serializers.CharField()
-    sku = serializers.CharField()
-    forecast_date = serializers.DateField()
-    forecast = serializers.DictField()
+    def get_sku(self, instance):
+        # Динамически получаем sku из первого элемента forecast
+        return instance.forecast.first().sku.sku if instance.forecast.exists() else None
 
+    def to_representation(self, instance):
+        forecast_data = []
+        for forecast_sale in instance.forecast.all():
+            for sales_unit in forecast_sale.sales_units.all():
+                future_date = str(sales_unit.future_date)
+                forecast_data.append({
+                    'date': future_date,
+                    'units': sales_unit.units
+                })
 
-# class FactSalesSerialiser(serializers.ModelSerializer):
-#     """ Сериализатор для фактической продажи """
-#     class Meta:
-#         model = FactSales
-#         fields = ('date', 'sales_type', 'sales_units',
-#                   'sales_units_promo', 'sales_rub', 'sales_run_promo')
+        return {
+            "data": [
+                {
+                    "store": instance.store.store,
+                    "sku": self.get_sku(instance),
+                    "forecast_date": str(instance.forecast_date),
+                    "forecast": {item['date']: item['units'] for item in forecast_data}
+                }
+            ]
+        }
+
+    
 
 
 class SalesSerializer(serializers.ModelSerializer):
     """ Сериализатор для продажи. """
     store = ShopsSerializer()
     sku = CategoriesSerializer()
-    # fact = FactSalesSerialiser()
+    
     
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data['store'] = data['store']['store']  # Получите значение 'store' из вложенного сериализатора
         data['sku'] = data['sku']['sku']
-
-        # data['fact'] = [{'date': fact_instance['date'],
-        #                  'sales_type': fact_instance['sales_type'],
-        #                  'sales_units': fact_instance['sales_units'],
-        #                  'sales_units_promo': fact_instance['sales_units_promo'],
-        #                  'sales_rub': fact_instance['sales_rub'],
-        #                  'sales_run_promo': fact_instance['sales_run_promo']}
-        #                 for fact_instance in data['fact']]
-        
         data['fact'] = [{'date': fact_instance.date,
                          'sales_type': fact_instance.sales_type,
                          'sales_units': fact_instance.sales_units,
@@ -101,12 +103,6 @@ class SalesSerializer(serializers.ModelSerializer):
                          'sales_run_promo': fact_instance.sales_run_promo}
                         for fact_instance in instance.fact.all()]
         return data
-    
-    
-    # def to_representation(self, instance):
-    #     # Переопределение представления для вложенного сериализатора
-    #     return instance.store
-
 
     class Meta:
         model = Sales

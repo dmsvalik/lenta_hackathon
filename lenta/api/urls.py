@@ -16,7 +16,8 @@ router_v1 = DefaultRouter()
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('forecast/', ForecastViewSet.as_view({'get': 'list', 'post': 'create'}), name='forecast-data'),
+    path('forecast/', ForecastViewSet.as_view({'get': 'list', 'post': 'create'}), name='forecast'),
+    # path('forecast-data/', ForecastData.as_view(), name='forecast-data'),
     path('categories/', CategoriesViewSet.as_view({'get': 'list'}), name='categories'),
     path('sales/', SalesViewSet.as_view({'get': 'list'}), name='sales'),
     path('shops/', ShopsViewSet.as_view({'get': 'list'}), name='shops'),
