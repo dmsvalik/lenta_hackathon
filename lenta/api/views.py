@@ -5,13 +5,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from categories.models import Categories
-from forecast.models import Forecast, SalesUnits
+from forecast.models import Forecast, ForecastSales, SalesUnits
 from api.serializers import (
     CategoriesSerializer,
-    ForecastDataSerializer,
     ForecastSerializer,
     SalesSerializer,
-    SalesUnitsSerializer,
     ShopsSerializer
 )
 from shops.models import Shops
@@ -26,73 +24,42 @@ class CategoriesViewSet(ModelViewSet):
         return CategoriesSerializer
 
 
+
 class ForecastViewSet(ModelViewSet):
     """ Список предсказаний. """
     queryset = Forecast.objects.all()
+    serializer_class = ForecastSerializer
 
-    def get_serializer_class(self):
-        return ForecastSerializer
+    def create(self, request, *args, **kwargs):
+        data = request.data.get('data', [])
+        forecasts = []
+        
+        for item in data:
+            store_data = item.get('store', {})
+            forecast_date = item.get('forecast_date')
+            forecast_data = item.get('forecast', [])
+
+            store_instance, _ = Shops.objects.get_or_create(store=store_data.get('store'))
+            for forecast_sale_data in forecast_data:
+                sku_data = forecast_sale_data.get('sku', '')
+                sales_units_data = forecast_sale_data.get('sales_units', [])
+
+                sku_instance, _ = Categories.objects.get_or_create(sku=sku_data)
+                forecast_sale_instance = ForecastSales.objects.create(sku=sku_instance)
+
+                for sales_unit_data in sales_units_data:
+                    future_date = sales_unit_data.get('future_date')
+                    units = sales_unit_data.get('units')
+                    SalesUnits.objects.create(future_date=future_date, units=units)
+
+                forecast_instance = Forecast.objects.create(store=store_instance, forecast_date=forecast_date)
+                forecast_instance.forecast.add(forecast_sale_instance)
+                forecasts.append(forecast_instance)
+
+        serializer = self.get_serializer(forecasts, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class SalesUnitsViewSet(ModelViewSet):
-    """ Список предсказаний. """
-    queryset = SalesUnits.objects.all()
-
-    def get_serializer_class(self):
-        return SalesUnitsSerializer
-
-
-class ForecastDataView(APIView):
-    def post(self, request, format=None):
-        serializer = ForecastDataSerializer(data=request.data)
-
-        if serializer.is_valid():
-            data = serializer.validated_data
-            store = data['store']
-            sku = data['sku']
-            forecast_date = data['forecast_date']
-            forecast = data['forecast']
-
-            # Создайте или обновите запись в модели Forecast
-            forecast_obj, created = Forecast.objects.get_or_create(
-                store=store,
-                sku=sku,
-                forecast_date=forecast_date,
-                forecast=forecast
-            )
-            forecast_obj.forecast = forecast
-            forecast_obj.save()
-
-            return Response(status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['POST'])
-# def create_forecast(request):
-#     if request.method == 'POST':
-#         store = request.data.get('store')
-#         forecast_date = request.data.get('forecast_date')
-#         sku = request.data.get('sku')
-#         sales_units_data = request.data.get('sales_units')
-
-#         # Создайте объекты модели и сохраните их
-#         forecast = Forecast.objects.create(store=store, forecast_date=forecast_date, sku=sku)
-#         for date, units in sales_units_data.items():
-#             SalesUnits.objects.create(date=date, units=units, forecast=forecast)
-
-#         return Response("Forecast created successfully", status=status.HTTP_201_CREATED)
-
-# @api_view(['GET'])
-# def get_forecast(request):
-#     if request.method == 'GET':
-#         store = request.query_params.get('store')
-#         sku = request.query_params.get('sku')
-#         forecast_date = request.query_params.get('forecast_date')
-
-#         # Выполните фильтрацию по параметрам и получите соответствующие объекты
-#         forecasts = Forecast.objects.filter(store=store, sku=sku, forecast_date=forecast_date)
-#         serializer = ForecastSerializer(forecasts, many=True)
-#         return Response({"data": serializer.data})
 
 
 class SalesViewSet(ModelViewSet):
