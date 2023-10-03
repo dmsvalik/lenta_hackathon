@@ -53,4 +53,6 @@ class Forecast(models.Model):
     )
 
     def __str__(self):
-        return f"{self.store} - {self.forecast_date.strftime('%Y, %B %d')}"
+        unique_skus = set(sale.sku.sku for sale in self.forecast.all())
+        skus = ', '.join(unique_skus)
+        return f"{self.store} - {skus} - {self.forecast_date.strftime('%Y, %B %d')}"
