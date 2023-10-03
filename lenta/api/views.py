@@ -60,6 +60,43 @@ class ForecastViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class ForecastCreateAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data.get('data', [])
+
+        for item in data:
+            store_name = item.get('store')
+            forecast_date = item.get('forecast_date')
+            forecast_data = item.get('forecast', {})
+
+            # Получаем или создаем магазин
+            store = Shops.objects.get(store=store_name)
+
+            # Создаем или получаем прогноз
+            forecast, created = Forecast.objects.get_or_create(
+                store=store,
+                forecast_date=forecast_date
+            )
+
+            # Создаем или получаем товар и связываем его с прогнозом
+            sku_name = forecast_data.get('sku')
+            sku = Categories.objects.get(sku=sku_name)
+            forecast_sale, created = ForecastSales.objects.get_or_create(
+                sku=sku,
+                forecast=forecast
+            )
+
+            # Добавляем данные о будущих продажах
+            sales_units_data = forecast_data.get('sales_units', {})
+            for future_date, units in sales_units_data.items():
+                SalesUnits.objects.create(
+                    future_date=future_date,
+                    units=units,
+                    forecast_sale=forecast_sale
+                )
+
+        return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
+
 
 
 class SalesViewSet(ModelViewSet):

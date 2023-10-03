@@ -59,5 +59,6 @@ class Sales(models.Model):
         verbose_name = 'Продажа'
         verbose_name_plural = 'Продажа'
 
-    # def __str__(self):
-    #     return self.store
+    def __str__(self):
+        dates = ', '.join(str(date.date) for date in self.fact.all())
+        return f"{self.store} - {self.sku} - {dates}"
