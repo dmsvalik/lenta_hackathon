@@ -14,6 +14,7 @@ from api.serializers import (
 )
 from shops.models import Shops
 from sales.models import Sales
+from django.shortcuts import get_object_or_404
 
 
 class CategoriesViewSet(ModelViewSet):
@@ -24,25 +25,25 @@ class CategoriesViewSet(ModelViewSet):
         return CategoriesSerializer
 
 
-
 class ForecastViewSet(ModelViewSet):
     """ Список предсказаний. """
     queryset = Forecast.objects.all()
     serializer_class = ForecastSerializer
 
     def create(self, request, *args, **kwargs):
-        data = request.data.get('data', [])
+        data = request.data.get('data')
+        print(data)
         forecasts = []
-        
+
         for item in data:
-            store_data = item.get('store', {})
+            store_data = item.get('store')
             forecast_date = item.get('forecast_date')
-            forecast_data = item.get('forecast', [])
+            forecast_data = item.get('forecast')
 
             store_instance, _ = Shops.objects.get_or_create(store=store_data.get('store'))
             for forecast_sale_data in forecast_data:
-                sku_data = forecast_sale_data.get('sku', '')
-                sales_units_data = forecast_sale_data.get('sales_units', [])
+                sku_data = forecast_sale_data.get('sku')
+                sales_units_data = forecast_sale_data.get('sales_units')
 
                 sku_instance, _ = Categories.objects.get_or_create(sku=sku_data)
                 forecast_sale_instance = ForecastSales.objects.create(sku=sku_instance)
@@ -62,41 +63,33 @@ class ForecastViewSet(ModelViewSet):
 
 class ForecastCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
-        data = request.data.get('data', [])
-
+        data = request.data.get('data')
+        print(type(data))
         for item in data:
+            print(item)
+            print(type(item))
             store_name = item.get('store')
             forecast_date = item.get('forecast_date')
-            forecast_data = item.get('forecast', {})
-
-            # Получаем или создаем магазин
-            store = Shops.objects.get(store=store_name)
-
-            # Создаем или получаем прогноз
+            forecast_data = item.get('forecast')
+            store = get_object_or_404(Shops, store=store_name)
             forecast, created = Forecast.objects.get_or_create(
                 store=store,
                 forecast_date=forecast_date
             )
-
-            # Создаем или получаем товар и связываем его с прогнозом
             sku_name = forecast_data.get('sku')
-            sku = Categories.objects.get(sku=sku_name)
+            sku = get_object_or_404(Categories, sku=sku_name)
             forecast_sale, created = ForecastSales.objects.get_or_create(
-                sku=sku,
-                forecast=forecast
+                sku=sku
             )
-
-            # Добавляем данные о будущих продажах
-            sales_units_data = forecast_data.get('sales_units', {})
+            forecast_sale.forecast.add(forecast)
+            sales_units_data = forecast_data.get('sales_units')
             for future_date, units in sales_units_data.items():
-                SalesUnits.objects.create(
+                sales_units_obj = SalesUnits.objects.create(
                     future_date=future_date,
                     units=units,
-                    forecast_sale=forecast_sale
                 )
-
+                forecast_sale.sales_units.add(sales_units_obj)
         return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
-
 
 
 class SalesViewSet(ModelViewSet):
