@@ -21,11 +21,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
-    'api.apps.ApiConfig',
-    'categories.apps.CategoriesConfig',
-    'forecast.apps.ForecastConfig',
-    'sales.apps.SalesConfig',
-    'shops.apps.ShopsConfig',    
+    'api.apps',
+    'categories',
+    'forecast',
+    'sales',
+    'shops',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +69,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'api.CustomUser'
+# AUTH_USER_MODEL = 'api.CustomUser'
 AUTHENTICATION_BACKENDS = ['api.backends.EmailBackend']
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
