@@ -82,8 +82,6 @@ class ForecastSerializer(serializers.ModelSerializer):
             ]
         }
 
-    
-
 
 class SalesSerializer(serializers.ModelSerializer):
     """ Сериализатор для продажи. """
