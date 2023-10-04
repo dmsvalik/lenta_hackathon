@@ -1,6 +1,4 @@
-# from django.shortcuts import render
 from rest_framework import status
-# from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -16,6 +14,7 @@ from api.serializers import (
 from shops.models import Shops
 from sales.models import Sales
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListAPIView
 
 
 class BaseAPIVIew(ListAPIView):
@@ -26,7 +25,7 @@ class BaseAPIVIew(ListAPIView):
         return Response(data)
 
 
-class CategoriesAPIView(BaseAPIVIew):
+class CategoriesAPIView(ModelViewSet):
     """ Список товаров. """
     queryset = Categories.objects.all()
 
@@ -34,7 +33,7 @@ class CategoriesAPIView(BaseAPIVIew):
         return CategoriesSerializer
 
 
-class ForecastAPIView(BaseAPIVIew):
+class ForecastViewSet(ModelViewSet):
     """ Список предсказаний. """
     queryset = Forecast.objects.all()
     serializer_class = ForecastSerializer
@@ -99,7 +98,6 @@ class ForecastCreateAPIView(APIView):
                 )
                 forecast_sale.sales_units.add(sales_units_obj)
         return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
-
 
 class SalesViewSet(ModelViewSet):
     """ Список покупок. """
