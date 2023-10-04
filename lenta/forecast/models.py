@@ -14,7 +14,6 @@ class SalesUnits(models.Model):
     )
 
 
-
 class ForecastSales(models.Model):
     """ Модель зависимости товара и даты будущих продаж"""
     sku = models.ForeignKey(
