@@ -26,20 +26,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
-<<<<<<< HEAD
-    'api.apps.ApiConfig',
-    'categories.apps.CategoriesConfig',
-    'forecast.apps.ForecastConfig',
-    'sales.apps.SalesConfig',
-    'shops.apps.ShopsConfig',
-    'users'
-=======
     'api.apps',
     'categories',
     'forecast',
     'sales',
     'shops',
->>>>>>> forcast_fix
 ]
 
 MIDDLEWARE = [
@@ -104,13 +95,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AUTH_USER_MODEL = 'users.CustomUser'
 
-<<<<<<< HEAD
-AUTHENTICATION_BACKENDS = [
-    'api.auth_backends.EmailAuthentication',
-    'django.contrib.auth.backends.ModelBackend',
-]
-=======
->>>>>>> forcast_fix
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 

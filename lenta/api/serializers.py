@@ -34,19 +34,6 @@ class SalesUnitsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-<<<<<<< HEAD
-class ForecastSerializer(serializers.ModelSerializer):
-    forecast = serializers.SerializerMethodField()
-
-    def get_forecast(self, obj):
-        if obj.forecast.count() > 1:
-            sales_units = obj.forecast.all()
-            forecast_data = {}
-            for unit in sales_units:
-                forecast_data[unit.future_date.strftime('%Y-%m-%d')] = unit.units
-            return forecast_data
-        return None
-=======
 class ForecastSalesSerializer(serializers.ModelSerializer):
     """ Сериализатор для даты отсчета. """
     sales_units = SalesUnitsSerializer(many=True)
@@ -72,7 +59,6 @@ class ForecastSerializer(serializers.ModelSerializer):
     forecast = ForecastSalesSerializer(many=True, read_only=True)
     store = serializers.CharField(source='store.store')
     sku = serializers.SerializerMethodField()
->>>>>>> forcast_fix
 
     class Meta:
         model = Forecast
@@ -125,20 +111,4 @@ class SalesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sales
-<<<<<<< HEAD
-        fields = '__all__'
-
-
-class ShopsSerializer(serializers.ModelSerializer):
-    """ Сериализатор для магазина. """
-    class Meta:
-        model = Shops
-        fields = '__all__'
-
-
-class AuthTokenSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(style={'input_type': 'password'})
-=======
         fields = ('store', 'sku', 'fact')
->>>>>>> forcast_fix
