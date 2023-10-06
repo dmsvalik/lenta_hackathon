@@ -3,6 +3,7 @@ from django.db import models
 
 class Shops(models.Model):
     """ Модель магазина """
+    id = models.CharField(primary_key=True, max_length=32)
     store = models.CharField(
         max_length=255,
         # verbose_name='store',
