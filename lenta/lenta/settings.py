@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'forecast',
     'sales',
     'shops',
-    'users'
+    'users',
 ]
 
 MIDDLEWARE = [
