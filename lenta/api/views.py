@@ -11,13 +11,23 @@ from api.serializers import (
     ShopsSerializer,
     CustomUserSerializer
 )
+from users.models import CustomUser
 from shops.models import Shops
 from sales.models import Sales
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import (
+    SessionAuthentication,
+    BasicAuthentication
+)
+from rest_framework.permissions import IsAuthenticated
 
 
 class BaseAPIVIew(ListAPIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
@@ -25,7 +35,7 @@ class BaseAPIVIew(ListAPIView):
         return Response(data)
 
 
-class CategoriesAPIView(ModelViewSet):
+class CategoriesAPIView(BaseAPIVIew):
     """ Список товаров. """
     queryset = Categories.objects.all()
 
@@ -33,10 +43,13 @@ class CategoriesAPIView(ModelViewSet):
         return CategoriesSerializer
 
 
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 class ForecastViewSet(ModelViewSet):
     """ Список предсказаний. """
     queryset = Forecast.objects.all()
     serializer_class = ForecastSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data.get('data')
@@ -70,12 +83,12 @@ class ForecastViewSet(ModelViewSet):
 
 
 class ForecastCreateAPIView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         data = request.data.get('data')
-        print(type(data))
         for item in data:
-            print(item)
-            print(type(item))
             store_name = item.get('store')
             forecast_date = item.get('forecast_date')
             forecast_data = item.get('forecast')
@@ -99,7 +112,8 @@ class ForecastCreateAPIView(APIView):
                 forecast_sale.sales_units.add(sales_units_obj)
         return Response({'status': 'success'}, status=status.HTTP_201_CREATED)
 
-class SalesViewSet(ModelViewSet):
+
+class SalesViewSet(BaseAPIVIew):
     """ Список покупок. """
     queryset = Sales.objects.all()
 
@@ -115,7 +129,6 @@ class ShopsAPIView(BaseAPIVIew):
         return ShopsSerializer
 
 
-'''class UsersViewSet(ModelViewSet):
+class UsersViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-'''
