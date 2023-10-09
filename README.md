@@ -25,6 +25,16 @@ python manage.py migrate
 python manage.py runserver
 ```
 При успешном старте получим backend приложение на [127.0.0.1:8000](https://127.0.0.1:8000)
+```
+Для создания супер пользователя необходимо ввести команду - python manage.py createsuperuser
+```
+Для импорта товаров из данных заказчика - python manage.py imp_store_to_db
+Для импорта магазинов заказчика - python manage.py imp_sku_to_db
+Для импорта истории покупок - python manage.py imp_sales_to_db (!!!!!  Процесс долгий - 2 часа !!!!!)
+
+```
+
+```
 
 
 ### Используемые технологии
@@ -34,7 +44,7 @@ Python 3.11.5, Django 4.2.5, Django REST Framework, sqlLite, Docker, nginx, guni
 ### Авторы проекта
 
 [Мельник Вячеслав](https://github.com/dmsvalik)<br>
-[Никита](https://github.com/10-42)
+[Киселев Никита](https://github.com/10-42)
 
 ### Посмотреть готовый проект
 
