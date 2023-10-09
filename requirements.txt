@@ -4,3 +4,5 @@ djangorestframework==3.14.0
 pytz==2023.3.post1
 sqlparse==0.4.4
 tzdata==2023.3
+drf-yasg==1.21.7
+pandas==2.1.1
