@@ -28,8 +28,8 @@ python manage.py runserver
 ```
 Для создания супер пользователя необходимо ввести команду - python manage.py createsuperuser
 ```
-Для импорта товаров из данных заказчика - python manage.py imp_store_to_db
-Для импорта магазинов заказчика - python manage.py imp_sku_to_db
+Для импорта товаров из данных заказчика - python manage.py imp_store_to_db <br>
+Для импорта магазинов заказчика - python manage.py imp_sku_to_db <br>
 Для импорта истории покупок - python manage.py imp_sales_to_db (!!!!!  Процесс долгий - 2 часа !!!!!)
 
 ```
