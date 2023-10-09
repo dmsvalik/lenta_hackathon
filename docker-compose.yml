@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  web:
+    build: ./lenta/
+    container_name: bakend_container
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=lenta.settings
+    networks:
+      - web
+
+  db:
+    image: "alpine:latest"
+    container_name: lenta_sqlite_container
+    command: sh -c "while :; do sleep 10; done"
+    volumes:
+      - ./data/db:/var/lib/sqlite
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
