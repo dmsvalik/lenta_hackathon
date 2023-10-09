@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from users.models import CustomUser
 
+
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(
