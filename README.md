@@ -33,6 +33,8 @@ python manage.py runserver
 Для импорта истории покупок - python manage.py imp_sales_to_db (!!!!!  Процесс долгий - 2 часа !!!!!)
 
 ```
+Для просмотра документации - https://127.0.0.1:8000/redoc<br>
+Swagger - https://127.0.0.1:8000/swagger
 
 ```
 
